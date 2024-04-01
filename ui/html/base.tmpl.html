@@ -10,8 +10,11 @@
   <header>
     <h1><a href="/">Snippetbax</a></h1>
   </header>
-    <main>{{template "main" .}}</main>
-    <footer>Powered by <a href="https://golang.org">Go</a></footer>
+  
+  {{template "nav" .}}
+
+  <main>{{template "main" .}}</main>
+  <footer>Powered by <a href="https://golang.org">Go</a></footer>
 </body>
 </html>
 {{end}}
