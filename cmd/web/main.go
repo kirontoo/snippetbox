@@ -8,6 +8,9 @@ import (
 func main() {
 	mux := http.NewServeMux()
 
+  fileServer := http.FileServer(http.Dir("./ui/static/"))
+  mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+
 	// Register handler functions
 	// this is where all of your routes (URL patterns) will go
 	mux.HandleFunc("/", home)
