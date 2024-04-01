@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -43,21 +42,3 @@ func snippetCreate(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Create a new snippet..."))
 }
 
-func setJSONHeader(w http.ResponseWriter) {
-	w.Header().Set("Content-Type", "application/json")
-}
-
-func main() {
-	mux := http.NewServeMux()
-
-	// Register handler functions
-	// this is where all of your routes (URL patterns) will go
-	mux.HandleFunc("/", home)
-	mux.HandleFunc("/snippet/view", snippetView)
-	mux.HandleFunc("/snippet/create", snippetCreate)
-
-	// Start server on TCP network address ":4000"
-	log.Print("Starting server on :4000")
-	err := http.ListenAndServe(":4000", mux)
-	log.Fatal(err)
-}
