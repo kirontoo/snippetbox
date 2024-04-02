@@ -4,12 +4,16 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
-	// parse netowork address flags
+	// parse netowork address flag
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	flag.Parse()
+
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	
 	mux := http.NewServeMux()
 
@@ -23,7 +27,7 @@ func main() {
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
 	// Start server on TCP network address ":4000"
-	log.Printf("Starting server on %s", *addr)
+	infoLog.Printf("Starting server on %s", *addr)
 	err := http.ListenAndServe(*addr, mux)
-	log.Fatal(err)
+	errorLog.Fatal(err)
 }
