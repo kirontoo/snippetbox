@@ -1,15 +1,20 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 )
 
 func main() {
+	// parse netowork address flags
+	addr := flag.String("addr", ":4000", "HTTP network address")
+	flag.Parse()
+	
 	mux := http.NewServeMux()
 
-  fileServer := http.FileServer(http.Dir("./ui/static/"))
-  mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+	fileServer := http.FileServer(http.Dir("./ui/static/"))
+	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	// Register handler functions
 	// this is where all of your routes (URL patterns) will go
@@ -18,7 +23,7 @@ func main() {
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
 	// Start server on TCP network address ":4000"
-	log.Print("Starting server on :4000")
-	err := http.ListenAndServe(":4000", mux)
+	log.Printf("Starting server on %s", *addr)
+	err := http.ListenAndServe(*addr, mux)
 	log.Fatal(err)
 }
