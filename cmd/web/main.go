@@ -24,22 +24,11 @@ func main() {
 		errorLog: errorLog,
 		infoLog: infoLog,
 	}
-	
-	mux := http.NewServeMux()
-
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-
-	// Register handler functions
-	// this is where all of your routes (URL patterns) will go
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/snippet/view", app.snippetView)
-	mux.HandleFunc("/snippet/create", app.snippetCreate)
 
 	srv := &http.Server{
 		Addr: *addr,
 		ErrorLog: errorLog,
-		Handler: mux,
+		Handler: app.routes(),
 	}
 
 	// Start server on TCP network address ":4000"
