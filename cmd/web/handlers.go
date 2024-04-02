@@ -9,7 +9,7 @@ import (
 )
 
 // Home handler function
-func home(w http.ResponseWriter, r *http.Request) {
+func (app *application)home(w http.ResponseWriter, r *http.Request) {
 	// if the current URL path does not exactly match "/" then it is not the home page
 	// return a 404
 	if r.URL.Path != "/" {
@@ -25,20 +25,20 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		log.Print(err.Error())
+		app.errorLog.Print(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 		return
 	}
 
 	err = ts.ExecuteTemplate(w, "base", nil)
 	if err != nil {
-		log.Print(err.Error())
+		app.errorLog.Print(err.Error())
 		http.Error(w, "Internal Server Error", 500)
 	}
 }
 
 // Add a snippetView handler function.
-func snippetView(w http.ResponseWriter, r *http.Request) {
+func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil || id < 1 {
 		http.NotFound(w, r)
@@ -49,7 +49,7 @@ func snippetView(w http.ResponseWriter, r *http.Request) {
 }
 
 // Add a snippetCreate handler function.
-func snippetCreate(w http.ResponseWriter, r *http.Request) {
+func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		// If it's not a POST method, send status code 405 and meesage
 		// "Method Not Allowed"
