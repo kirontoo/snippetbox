@@ -6,7 +6,7 @@ import (
 	"runtime/debug"
 )
 
-// writes an error message, trace stack to error log 
+// writes an error message, trace stack to error log
 // & sends a generic 500 error to the user
 func (app *application) serverError(w http.ResponseWriter, err error) {
 	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
@@ -22,4 +22,21 @@ func (app *application) clientError(w http.ResponseWriter, status int) {
 // sends a 404 not found
 func (app *application) notFound(w http.ResponseWriter) {
 	app.clientError(w, http.StatusNotFound)
+}
+
+// Retrieve the appropriate template from the templateCache and send it back to client
+func (app *application) render(w http.ResponseWriter, status int, page string, data *templateData) {
+	ts, ok := app.templateCache[page]
+	if !ok {
+		err := fmt.Errorf("the template %s does not exist", page)
+		app.serverError(w, err)
+		return
+	}
+
+	w.WriteHeader(status)
+
+	err := ts.ExecuteTemplate(w, "base", data)
+	if err != nil {
+		app.serverError(w, err)
+	}
 }

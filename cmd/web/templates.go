@@ -16,15 +16,15 @@ func newTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}
 
 	// get a slice of all filepaths that match the pattern 
-	pages, err := filepath.Glob("./ui/html/pages/*.tmpl")
+	pages, err := filepath.Glob("./ui/html/pages/*.html")
 	if err != nil {
 		return nil, err
 	}
 	for _, page := range pages {
 		name := filepath.Base(page)
 		files := []string{
-			"./ui/html/base.tmpl",
-			"./ui/html/partials/nav.tmpl",
+			"./ui/html/base.tmpl.html",
+			"./ui/html/partials/nav.tmpl.html",
 			page,
 		}
 
