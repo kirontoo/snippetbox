@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
-	"unicode/utf8"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/kirontoo/snippetbox/internal/models"
@@ -66,7 +64,6 @@ type snippetCreateForm struct {
 	Title string
 	Content string
 	Expires int
-	FieldErrors map[string]string
 	validator.Validator
 }
 
@@ -87,7 +84,6 @@ func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request
 		Title : r.PostForm.Get("title"),
 		Content : r.PostForm.Get("content"),
 		Expires: expires,
-		FieldErrors: map[string]string{},
 	}
 
 	// validate data
