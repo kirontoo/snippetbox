@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"database/sql"
 	"flag"
 	"log"
@@ -54,6 +55,10 @@ func main() {
 	sessionManager.Lifetime = 12 * time.Hour
 	sessionManager.Cookie.Secure = true
 
+	tlsConfig := &tls.Config {
+		CurvePreferences: []tls.CurveID{tls.X25519, tls.CurveP256},
+	}
+
 	app := &application{
 		errorLog: errorLog,
 		infoLog:  infoLog,
@@ -67,6 +72,10 @@ func main() {
 		Addr:     *addr,
 		ErrorLog: errorLog,
 		Handler:  app.routes(),
+		TLSConfig: tlsConfig,
+		IdleTimeout: time.Minute,
+		ReadTimeout: 5 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
 	// Start server on TCP network address ":4000"
