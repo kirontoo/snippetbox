@@ -1,14 +1,15 @@
 package main
 
 import (
-	"errors"
 	"bytes"
+	"errors"
 	"fmt"
 	"net/http"
 	"runtime/debug"
 	"time"
 
 	"github.com/go-playground/form/v4"
+	"github.com/justinas/nosurf"
 )
 
 // writes an error message, trace stack to error log
@@ -55,6 +56,7 @@ func (app *application)newTemplateData(r *http.Request) *templateData {
 		CurrentYear: time.Now().Year(),
 		Flash: app.sessionManager.PopString(r.Context(), "flash"),
 		IsAuthenticated: app.isAuthenticated(r),
+		CSRFToken: nosurf.Token(r),
 	}
 }
 

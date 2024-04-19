@@ -78,3 +78,4 @@ func (m *UserModel) Exists(id int) (bool, error) {
 
 	return exists, err
 }
+
