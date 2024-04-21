@@ -186,13 +186,13 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := app.newTemplateData(r)
 		data.Form = form
-		app.render(w, http.StatusUnprocessableEntity, "login.tmpl", data)
+		app.render(w, http.StatusUnprocessableEntity, "login.tmpl.html", data)
 		return
 	}
 
 	id, err := app.users.Authenticate(form.Email, form.Password)
 	if err != nil {
-		if errors.Is(err,models.ErrInvalidCredentials) {
+		if errors.Is(err, models.ErrInvalidCredentials) {
 			form.AddNonValidError("Email or password is incorrect")
 			data := app.newTemplateData(r)
 			data.Form = form
@@ -203,7 +203,6 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-
 	// good practice to generate a new session id when the authentication state
 	// or privilege levels changes for the user
 	err = app.sessionManager.RenewToken(r.Context())
@@ -213,7 +212,7 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// add id of current user to session, so that they are 'logged in'
-	app.sessionManager.Put(r.Context(), "authenticatedUserID", id)
+	app.sessionManager.Put(r.Context(), AuthenticatedUserKey, id)
 
 	http.Redirect(w, r, "/snippet/create", http.StatusSeeOther)
 }
@@ -224,8 +223,8 @@ func (app *application) userLogoutPost(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
-	
-	app.sessionManager.Remove(r.Context(), "authenticatedUserID")
+
+	app.sessionManager.Remove(r.Context(), AuthenticatedUserKey)
 	app.sessionManager.Put(r.Context(), "flash", "You've been logged out successfully!")
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
